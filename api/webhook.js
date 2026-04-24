@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-  // Só aceita POST
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Método não permitido' });
   }
@@ -9,15 +8,12 @@ export default async function handler(req, res) {
 
     console.log('🔔 Webhook recebido:', JSON.stringify(data, null, 2));
 
-    // Detecta evento de pagamento
     if (data?.type === 'payment' || data?.action?.includes('payment')) {
       console.log('💰 Evento de pagamento detectado');
 
       const paymentId = data?.data?.id;
 
       console.log('🧾 Payment ID:', paymentId);
-
-      // Aqui depois você valida no Mercado Pago
     }
 
     return res.status(200).json({ ok: true });
