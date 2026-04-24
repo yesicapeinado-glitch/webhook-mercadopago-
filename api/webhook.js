@@ -8,7 +8,10 @@ export default async function handler(req, res) {
 
     console.log('🔔 Webhook recebido:', JSON.stringify(data, null, 2));
 
-    if (data?.type === 'payment' || data?.action?.includes('payment')) {
+    if (
+      data?.type === 'payment' ||
+      (data?.action && data.action.includes('payment'))
+    ) {
       console.log('💰 Evento de pagamento detectado');
 
       const paymentId = data?.data?.id;
