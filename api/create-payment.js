@@ -5,6 +5,11 @@ mercadopago.configure({
 });
 
 export default async function handler(req, res) {
+
+  if (req.method !== "GET") {
+    return res.status(405).json({ erro: "Método não permitido" });
+  }
+
   try {
     const preference = {
       items: [
@@ -15,9 +20,9 @@ export default async function handler(req, res) {
         },
       ],
       back_urls: {
-        success: "https://webhook-mercadopago-ten.vercel.app/obrigado",
-        failure: "https://webhook-mercadopago-ten.vercel.app/erro",
-        pending: "https://webhook-mercadopago-ten.vercel.app/pendente",
+        success: "https://yesicapeinadotransforma.com/obrigado/",
+        failure: "https://yesicapeinadotransforma.com/erro/",
+        pending: "https://yesicapeinadotransforma.com/pendente/",
       },
       auto_return: "approved",
     };
