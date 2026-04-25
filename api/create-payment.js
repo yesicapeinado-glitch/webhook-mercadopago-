@@ -5,11 +5,6 @@ mercadopago.configure({
 });
 
 export default async function handler(req, res) {
-
-  if (req.method !== "GET") {
-    return res.status(405).json({ erro: "Método não permitido" });
-  }
-
   try {
     const preference = {
       items: [
@@ -17,12 +12,13 @@ export default async function handler(req, res) {
           title: "Sessão de Terapia - Jéssica Peinado",
           quantity: 1,
           unit_price: 100,
+          currency_id: "BRL",
         },
       ],
       back_urls: {
         success: "https://yesicapeinadotransforma.com/obrigado/",
-        failure: "https://yesicapeinadotransforma.com/erro/",
-        pending: "https://yesicapeinadotransforma.com/pendente/",
+        failure: "https://yesicapeinadotransforma.com/erro",
+        pending: "https://yesicapeinadotransforma.com/pendente",
       },
       auto_return: "approved",
     };
@@ -34,7 +30,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error("ERRO:", error);
+    console.error("ERRO REAL:", error);
     return res.status(500).json({
       erro: "Erro ao criar pagamento",
       detalhe: error.message,
