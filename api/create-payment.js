@@ -1,7 +1,7 @@
 import mercadopago from "mercadopago";
 
 mercadopago.configure({
-  access_token: "COLE_SEU_ACCESS_TOKEN_AQUI",
+  access_token: "APP_USR-4095066286833133-042515-8e4fb68f324b4bfdc99860b2514250dd-3360219462",
 });
 
 export default async function handler(req, res) {
@@ -29,9 +29,10 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error("ERRO:", error);
+    console.error("ERRO REAL:", error);
     return res.status(500).json({
       erro: "Erro ao criar pagamento",
+      detalhe: error.message,
     });
   }
 }
