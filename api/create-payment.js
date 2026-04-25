@@ -15,9 +15,9 @@ export default async function handler(req, res) {
         },
       ],
       back_urls: {
-        success: "https://projeto-4n8d1.vercel.app/obrigado",
-        failure: "https://projeto-4n8d1.vercel.app/erro",
-        pending: "https://projeto-4n8d1.vercel.app/pendente",
+        success: "https://webhook-mercadopago-ten.vercel.app/obrigado",
+        failure: "https://webhook-mercadopago-ten.vercel.app/erro",
+        pending: "https://webhook-mercadopago-ten.vercel.app/pendente",
       },
       auto_return: "approved",
     };
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error("ERRO REAL:", error);
+    console.error("ERRO:", error);
     return res.status(500).json({
       erro: "Erro ao criar pagamento",
       detalhe: error.message,
