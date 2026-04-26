@@ -19,7 +19,7 @@ export default async function handler(req, res) {
       back_urls: {
         success: "https://yesicapeinadotransforma.com/obrigado/",
         failure: "https://yesicapeinadotransforma.com/obrigado/",
-        pending: "https:///yesicapeinadotransforma.com/obrigado//",
+        pending: "https://yesicapeinadotransforma.com/obrigado//",
       },
 
       auto_return: "approved",
