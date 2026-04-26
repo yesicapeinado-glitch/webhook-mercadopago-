@@ -1,17 +1,21 @@
-import mercadopago from "mercadopago";
-
-mercadopago.configure({
-  access_token: process.env.MP_ACCESS_TOKEN,
-});
-
 export default async function handler(req, res) {
   try {
+    const { tipo } = req.query;
+
+    let price = 120;
+    let title = "Sessão de Terapia - Yesica Peinado";
+
+    if (tipo === "mensal") {
+      price = 360;
+      title = "Acompanhamento Mensal - Yesica Peinado";
+    }
+
     const preference = {
       items: [
         {
-          title: "Sessão de Terapia - yesica Peinado",
+          title,
           quantity: 1,
-          unit_price: 120,
+          unit_price: price,
           currency_id: "BRL",
         },
       ],
@@ -19,7 +23,7 @@ export default async function handler(req, res) {
       back_urls: {
         success: "https://yesicapeinadotransforma.com/obrigado/",
         failure: "https://yesicapeinadotransforma.com/obrigado/",
-        pending: "https://yesicapeinadotransforma.com/obrigado//",
+        pending: "https://yesicapeinadotransforma.com/obrigado/",
       },
 
       auto_return: "approved",
@@ -27,16 +31,13 @@ export default async function handler(req, res) {
 
     const response = await mercadopago.preferences.create(preference);
 
-    return res.status(200).json({
-      link_pagamento: response.body.init_point,
-    });
+    return res.redirect(response.body.init_point);
 
   } catch (error) {
     console.error(error);
 
     return res.status(500).json({
       erro: "Erro ao criar pagamento",
-      detalhe: error.message,
     });
   }
 }
