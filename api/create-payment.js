@@ -9,9 +9,9 @@ export default async function handler(req, res) {
     const preference = {
       items: [
         {
-          title: "Sessão de Terapia - Jéssica Peinado",
+          title: "Sessão de Terapia - yesica Peinado",
           quantity: 1,
-          unit_price: 100,
+          unit_price: 120,
           currency_id: "BRL",
         },
       ],
