@@ -8,20 +8,25 @@ export default async function handler(req, res) {
   try {
     const { tipo } = req.query;
 
-    let price = 120;
-    let title = "Sessão de Terapia - Yesica Peinado";
+    const produtos = {
+      individual: {
+        price: 120,
+        title: "Sessão de Terapia - Yesica Peinado"
+      },
+      mensal: {
+        price: 360,
+        title: "Acompanhamento Mensal - Yesica Peinado"
+      }
+    };
 
-    if (tipo === "mensal") {
-      price = 360;
-      title = "Acompanhamento Mensal - Yesica Peinado";
-    }
+    const produto = produtos[tipo] || produtos.individual;
 
     const preference = {
       items: [
         {
-          title,
+          title: produto.title,
           quantity: 1,
-          unit_price: price,
+          unit_price: produto.price,
           currency_id: "BRL",
         },
       ],
