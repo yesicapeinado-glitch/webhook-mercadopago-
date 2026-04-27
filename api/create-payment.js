@@ -27,15 +27,15 @@ export default async function handler(req, res) {
           title: produto.title,
           quantity: 1,
           unit_price: produto.price,
-          currency_id: "BRL",
-        },
-      ],
+    currency_id: "BRL",
+},
+],
 
-      back_urls: {
-        success: "https://yesicapeinadotransforma.com/obrigado/",
-        failure: "https://yesicapeinadotransforma.com/obrigado/",
-        pending: "https://yesicapeinadotransforma.com/obrigado/",
-      },
+back_urls: {
+  success: "https://yesicapeinadotransforma.com/obrigado/",
+  failure: "https://yesicapeinadotransforma.com/falho/",
+  pending: "https://yesicapeinadotransforma.com/pendente/",
+},
 
       auto_return: "approved",
     };
