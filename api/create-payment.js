@@ -1,12 +1,6 @@
-import mercadopago from "mercadopago";
-
-mercadopago.configure({
-  access_token: process.env.MP_ACCESS_TOKEN,
-});
-
 export default async function handler(req, res) {
   try {
-    const { tipo } = req.query;
+    const { tipo, gclid } = req.query;
 
     const produtos = {
       individual: {
@@ -27,15 +21,19 @@ export default async function handler(req, res) {
           title: produto.title,
           quantity: 1,
           unit_price: produto.price,
-    currency_id: "BRL",
-},
-],
+          currency_id: "BRL",
+        },
+      ],
 
-back_urls: {
-  success: "https://yesicapeinadotransforma.com/obrigado/",
-  failure: "https://yesicapeinadotransforma.com/falho/",
-  pending: "https://yesicapeinadotransforma.com/pendente/",
-},
+      metadata: {
+        gclid: gclid || null
+      },
+
+      back_urls: {
+        success: "https://yesicapeinadotransforma.com/obrigado/",
+        failure: "https://yesicapeinadotransforma.com/falho/",
+        pending: "https://yesicapeinadotransforma.com/pendente/",
+      },
 
       auto_return: "approved",
     };
@@ -46,9 +44,6 @@ back_urls: {
 
   } catch (error) {
     console.error(error);
-
-    return res.status(500).json({
-      erro: "Erro ao criar pagamento",
-    });
+    return res.status(500).json({ erro: "Erro ao criar pagamento" });
   }
 }
