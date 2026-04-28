@@ -1,7 +1,10 @@
-console.log("TOKEN:", process.env.MP_ACCESS_TOKEN);
+import mercadopago from "mercadopago";
+
+mercadopago.configurations.setAccessToken(process.env.MP_ACCESS_TOKEN);
+
 export default async function handler(req, res) {
   try {
-    const { tipo, gclid } = req.query;
+    const { tipo } = req.query;
 
     const produtos = {
       individual: {
@@ -16,35 +19,28 @@ export default async function handler(req, res) {
 
     const produto = produtos[tipo] || produtos.individual;
 
-    const preference = {
+    const response = await mercadopago.preferences.create({
       items: [
         {
           title: produto.title,
-          quantity: 1,
           unit_price: produto.price,
-          currency_id: "BRL",
-        },
+          quantity: 1
+        }
       ],
-
-      metadata: {
-        gclid: gclid || null
-      },
-
       back_urls: {
-        success: "https://yesicapeinadotransforma.com/obrigado/",
-        failure: "https://yesicapeinadotransforma.com/falho/",
-        pending: "https://yesicapeinadotransforma.com/pendente/",
+        success: "https://yesicapeinadotransforma.com/obrigado",
+        failure: "https://yesicapeinadotransforma.com/erro",
+        pending: "https://yesicapeinadotransforma.com/pendente"
       },
+      auto_return: "approved"
+    });
 
-      auto_return: "approved",
-    };
-
-    const response = await mercadopago.preferences.create(preference);
-
-    return res.redirect(response.body.init_point);
+    return res.status(200).json({
+      link: response.body.init_point
+    });
 
   } catch (error) {
-    console.error(error);
+    console.error("ERRO REAL:", error);
     return res.status(500).json({ erro: "Erro ao criar pagamento" });
   }
 }
