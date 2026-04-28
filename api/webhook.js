@@ -10,17 +10,17 @@ export default async function handler(req, res) {
 
     console.log("📩 Webhook recebido:", JSON.stringify(data, null, 2));
 
-    // 🔎 Verifica se é evento de pagamento
+    // 👉 Verifica se é evento de pagamento
     if (data.type === "payment") {
 
       const paymentId = data.data.id;
 
-      console.log("💰 ID pagamento:", paymentId);
+      console.log("💰 ID do pagamento:", paymentId);
 
-      // 🔐 Token Mercado Pago (coloca na Vercel ENV)
+      // 🔐 Token vem da Vercel (já configurado)
       const MP_TOKEN = process.env.MP_ACCESS_TOKEN;
 
-      // 🔎 Consulta pagamento no Mercado Pago
+      // 🔎 Busca dados do pagamento no Mercado Pago
       const response = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
         headers: {
           Authorization: `Bearer ${MP_TOKEN}`
@@ -29,22 +29,23 @@ export default async function handler(req, res) {
 
       const pagamento = await response.json();
 
-      console.log("📊 Status pagamento:", pagamento.status);
+      console.log("📊 Status:", pagamento.status);
 
-      // ✅ Só dispara conversão se aprovado
+      // ✅ Só dispara se pagamento aprovado
       if (pagamento.status === "approved") {
 
-        const valor = pagamento.transaction_amount;
+        const valor = pagamento.transaction_amount || 0;
 
         console.log("✅ Pagamento aprovado:", valor);
 
-        // 🔥 ENVIA CONVERSÃO PRO GOOGLE ADS
-        const GOOGLE_CONVERSION_ID = "17622796473";
-        const GOOGLE_LABEL = "JNa0CPqbzqEcELmRmtNB";
+        // 🔥 DADOS DO GOOGLE ADS
+        const CONVERSION_ID = "17622796473";
+        const LABEL = "JNa0CPqbzqEcELmRmtNB";
 
-        await fetch(`https://www.googleadservices.com/pagead/conversion/${GOOGLE_CONVERSION_ID}/?label=${GOOGLE_LABEL}&value=${valor}&currency_code=BRL`, {
-          method: "GET"
-        });
+        // 🚀 ENVIA CONVERSÃO
+        const url = `https://www.googleadservices.com/pagead/conversion/${CONVERSION_ID}/?label=${LABEL}&value=${valor}&currency_code=BRL`;
+
+        await fetch(url, { method: "GET" });
 
         console.log("🚀 Conversão enviada para Google Ads!");
       }
@@ -53,7 +54,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true });
 
   } catch (error) {
-    console.error("❌ Erro webhook:", error);
+    console.error("❌ Erro no webhook:", error);
     return res.status(500).json({ error: "Erro interno" });
   }
 }
