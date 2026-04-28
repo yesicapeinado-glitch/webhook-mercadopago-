@@ -4,7 +4,7 @@ mercadopago.configurations.setAccessToken(process.env.MP_ACCESS_TOKEN);
 
 export default async function handler(req, res) {
   try {
-    const { tipo } = req.query;
+    const { tipo, gclid } = req.query;
 
     const produtos = {
       individual: {
@@ -32,12 +32,15 @@ export default async function handler(req, res) {
         failure: "https://yesicapeinadotransforma.com/erro",
         pending: "https://yesicapeinadotransforma.com/pendente"
       },
-      auto_return: "approved"
+      auto_return: "approved",
+
+      metadata: {
+        gclid: gclid || null
+      }
     });
 
-    return res.status(200).json({
-      link: response.body.init_point
-    });
+    // 🔥 REDIRECIONA DIRETO (sem JSON)
+    return res.redirect(response.body.init_point);
 
   } catch (error) {
     console.error("ERRO REAL:", error);
