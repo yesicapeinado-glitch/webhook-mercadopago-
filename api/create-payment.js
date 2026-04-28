@@ -1,3 +1,4 @@
+console.log("TOKEN:", process.env.MP_ACCESS_TOKEN);
 export default async function handler(req, res) {
   try {
     const { tipo, gclid } = req.query;
