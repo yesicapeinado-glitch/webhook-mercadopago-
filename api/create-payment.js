@@ -32,7 +32,7 @@ export default async function handler(req, res) {
       back_urls: {
         success: `https://yesicapeinadotransforma.com/obrigado?tipo=${tipo}&gclid=${gclid || ''}`,
         failure: "https://yesicapeinadotransforma.com/erro",
-        pending: "https://yesicapeinadotransforma.com/pendente"
+        pending: `https://yesicapeinadotransforma.com/pendente?tipo=${tipo}&gclid=${gclid || ''}`
       },
 
       auto_return: "approved",
