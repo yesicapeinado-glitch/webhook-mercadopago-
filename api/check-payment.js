@@ -1,33 +1,52 @@
+import { MercadoPagoConfig, Preference } from "mercadopago";
+
+const client = new MercadoPagoConfig({
+  accessToken: process.env.MP_ACCESS_TOKEN,
+});
+
 export default async function handler(req, res) {
-  const { id } = req.query;
-
-  if (!id) {
-    return res.status(400).json({ error: 'payment_id obrigatório' });
-  }
-
   try {
-    const response = await fetch(`https://api.mercadopago.com/v1/payments/${id}`, {
-      headers: {
-        Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}`
+    const { tipo, gclid } = req.query;
+
+    const produtos = {
+      individual: {
+        price: 120,
+        title: "Sessão de Terapia - Yesica Peinado"
+      },
+      mensal: {
+        price: 360,
+        title: "Acompanhamento Mensal - Yesica Peinado"
+      }
+    };
+
+    const produto = produtos[tipo] || produtos.individual;
+
+    const preference = new Preference(client);
+
+    const response = await preference.create({
+      body: {
+        items: [
+          {
+            title: produto.title,
+            unit_price: produto.price,
+            quantity: 1,
+            currency_id: "BRL"
+          }
+        ],
+        back_urls: {
+          success: `https://yesicapeinadotransforma.com/obrigado`,
+          failure: `https://yesicapeinadotransforma.com/erro`,
+          pending: `https://yesicapeinadotransforma.com/pendente`
+        },
+        auto_return: "approved",
+        notification_url: "https://webhook-mercadopago-ten.vercel.app/api/webhook"
       }
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Erro Mercado Pago:', errorText);
-      return res.status(500).json({ error: 'Erro ao consultar pagamento' });
-    }
-
-    const data = await response.json();
-
-    return res.status(200).json({
-      status: data.status,
-      valor: data.transaction_amount || 0,
-      tipo: data.metadata?.tipo || 'individual'
-    });
+    return res.redirect(response.init_point);
 
   } catch (error) {
-    console.error('Erro interno:', error);
-    return res.status(500).json({ error: 'Erro interno no servidor' });
+    console.error("ERRO:", error);
+    return res.status(500).json({ erro: error.message });
   }
 }
